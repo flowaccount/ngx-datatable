@@ -61,7 +61,7 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
    * Template for the target marker of drag target columns.
    */
   @Input() targetMarkerTemplate: any;
-  _groupHeaders: QueryList<DatatableGroupHeaderDirective>;
+  _groupHeaders: DatatableGroupHeaderDirective[];
 
   /**
    * Rows that are displayed in the table.
@@ -579,11 +579,11 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
    */
   @ContentChildren(DatatableGroupHeaderDirective)
   set groupHeaders(val: QueryList<DatatableGroupHeaderDirective>) {
-    this._groupHeaders = val;
+    this._groupHeaders = val.toArray();
   }
 
   get groupHeader() {
-    return this._groupHeaders.first;
+    return this._groupHeaders[0];
   }
 
   /**

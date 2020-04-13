@@ -133,7 +133,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
   @Input() selected: any[] = [];
   @Input() rowIdentity: any;
   @Input() rowDetail: any;
-  @Input() groupHeaders: QueryList<DatatableGroupHeaderDirective>;
+  @Input() groupHeaders: DatatableGroupHeaderDirective[];
   @Input() selectCheck: any;
   @Input() displayCheck: any;
   @Input() trackByProp: string;
@@ -774,6 +774,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
    */
   getRowExpanded(row: any): boolean {
     if (this.rowExpansions.length === 0 && this.groupExpansionDefault) {
+      console.log(this.groupedRows);
       for (const group of this.groupedRows) {
         this.rowExpansions.push(group);
       }

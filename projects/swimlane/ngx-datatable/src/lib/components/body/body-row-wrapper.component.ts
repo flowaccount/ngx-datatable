@@ -18,17 +18,15 @@ import { DatatableGroupHeaderDirective } from './body-group-header.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ng-container *ngFor="let groupHeader of groupHeaders">
-      <div *ngIf="groupHeader && groupHeader.template" class="datatable-group-header" [ngStyle]="getGroupHeaderStyle()">
+      <div *ngIf="groupHeader.template" class="datatable-group-header" [ngStyle]="getGroupHeaderStyle()">
         <ng-template
-          *ngIf="groupHeader && groupHeader.template"
+          *ngIf="groupHeader.template"
           [ngTemplateOutlet]="groupHeader.template"
           [ngTemplateOutletContext]="groupContext"
         >
         </ng-template>
       </div>
-      <ng-content
-        *ngIf="(groupHeader && groupHeader.template && expanded) || !groupHeader || !groupHeader.template"
-      ></ng-content>
+      <ng-content *ngIf="(groupHeader.template && expanded) || !groupHeader || !groupHeader.template"></ng-content>
     </ng-container>
     <div
       *ngIf="rowDetail && rowDetail.template && expanded"
@@ -50,7 +48,7 @@ import { DatatableGroupHeaderDirective } from './body-group-header.directive';
 export class DataTableRowWrapperComponent implements DoCheck {
   @Input() innerWidth: number;
   @Input() rowDetail: any;
-  @Input() groupHeaders: QueryList<DatatableGroupHeaderDirective>;
+  @Input() groupHeaders: DatatableGroupHeaderDirective[];
   @Input() offsetX: number;
   @Input() detailRowHeight: any;
   @Input() row: any;
