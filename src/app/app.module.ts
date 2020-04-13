@@ -23,6 +23,7 @@ import { RowCssComponent } from './basic/css.component';
 import { DynamicHeightComponent } from './basic/dynamic-height.component';
 import { FooterDemoComponent } from './basic/footer.component';
 import { RowGroupingComponent } from './basic/row-grouping.component';
+import { AdvanceRowGroupingComponent } from './basic/advance-row-grouping.component';
 
 // -- Themes
 import { BootstrapThemeComponent } from './basic/bootstrap.component';
@@ -126,7 +127,8 @@ import { CommonModule } from '@angular/common';
     SummaryRowSimpleComponent,
     SummaryRowCustomTemplateComponent,
     SummaryRowServerPagingComponent,
-    SummaryRowInlineHtmlComponent
+    SummaryRowInlineHtmlComponent,
+    AdvanceRowGroupingComponent
   ],
   imports: [
     CommonModule,

@@ -74,6 +74,9 @@
           <li>
             <a href="#row-grouping" (click)="state = 'row-grouping'">Row Grouping</a>
           </li>
+          <li>
+            <a href="#advance-row-grouping" (click)="state = 'advance-row-grouping'">Advance Row Grouping</a>
+          </li>
           <li><a href="#" (click)="state = ''">Fluid Row Height</a></li>
           <li>
             <a href="#basic-fixed" (click)="state = 'basic-fixed'">Fixed Row Height</a>
@@ -223,6 +226,7 @@
 
     <!-- Paging -->
     <row-grouping-demo *ngIf="state === 'row-grouping'"></row-grouping-demo>
+    <advance-row-grouping-demo *ngIf="state === 'advance-row-grouping'"></advance-row-grouping-demo>
     <client-paging-demo *ngIf="state === 'client-paging'"></client-paging-demo>
     <server-paging-demo *ngIf="state === 'server-paging'"></server-paging-demo>
     <paging-scrolling-novirtualization-demo

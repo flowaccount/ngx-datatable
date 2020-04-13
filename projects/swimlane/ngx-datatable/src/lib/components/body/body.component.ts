@@ -8,13 +8,16 @@ import {
   ViewChild,
   OnInit,
   OnDestroy,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  QueryList
 } from '@angular/core';
 import { ScrollerComponent } from './scroller.component';
 import { SelectionType } from '../../types/selection.type';
 import { columnsByPin, columnGroupWidths } from '../../utils/column';
 import { RowHeightCache } from '../../utils/row-height-cache';
 import { translateXY } from '../../utils/translate';
+import { Subscription } from 'rxjs';
+import { DatatableGroupHeaderDirective } from './body-group-header.directive';
 
 @Component({
   selector: 'datatable-body',
@@ -54,7 +57,7 @@ import { translateXY } from '../../utils/translate';
           [innerWidth]="innerWidth"
           [ngStyle]="getRowsStyles(group)"
           [rowDetail]="rowDetail"
-          [groupHeader]="groupHeader"
+          [groupHeaders]="groupHeaders"
           [offsetX]="offsetX"
           [detailRowHeight]="getDetailRowHeight(group && group[i], i)"
           [row]="group"
@@ -130,7 +133,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
   @Input() selected: any[] = [];
   @Input() rowIdentity: any;
   @Input() rowDetail: any;
-  @Input() groupHeader: any;
+  @Input() groupHeaders: QueryList<DatatableGroupHeaderDirective>;
   @Input() selectCheck: any;
   @Input() displayCheck: any;
   @Input() trackByProp: string;
@@ -252,7 +255,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
   columnGroupWidths: any;
   columnGroupWidthsWithoutGroup: any;
   rowTrackingFn: any;
-  listener: any;
+  listeners: Subscription[] = [];
   rowIndexes: any = new WeakMap<any, string>();
   rowExpansions: any[] = [];
 
@@ -283,37 +286,43 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     if (this.rowDetail) {
-      this.listener = this.rowDetail.toggle.subscribe(({ type, value }: { type: string; value: any }) => {
-        if (type === 'row') {
-          this.toggleRowExpansion(value);
-        }
-        if (type === 'all') {
-          this.toggleAllRows(value);
-        }
+      this.listeners.push(
+        this.rowDetail.toggle.subscribe(({ type, value }: { type: string; value: any }) => {
+          if (type === 'row') {
+            this.toggleRowExpansion(value);
+          }
+          if (type === 'all') {
+            this.toggleAllRows(value);
+          }
 
-        // Refresh rows after toggle
-        // Fixes #883
-        this.updateIndexes();
-        this.updateRows();
-        this.cd.markForCheck();
-      });
+          // Refresh rows after toggle
+          // Fixes #883
+          this.updateIndexes();
+          this.updateRows();
+          this.cd.markForCheck();
+        })
+      );
     }
 
-    if (this.groupHeader) {
-      this.listener = this.groupHeader.toggle.subscribe(({ type, value }: { type: string; value: any }) => {
-        if (type === 'group') {
-          this.toggleRowExpansion(value);
-        }
-        if (type === 'all') {
-          this.toggleAllRows(value);
-        }
+    if (this.groupHeaders.length > 0) {
+      this.listeners.push(
+        ...this.groupHeaders.map((group) =>
+          group.toggle.subscribe(({ type, value }: { type: string; value: any }) => {
+            if (type === 'group') {
+              this.toggleRowExpansion(value);
+            }
+            if (type === 'all') {
+              this.toggleAllRows(value);
+            }
 
-        // Refresh rows after toggle
-        // Fixes #883
-        this.updateIndexes();
-        this.updateRows();
-        this.cd.markForCheck();
-      });
+            // Refresh rows after toggle
+            // Fixes #883
+            this.updateIndexes();
+            this.updateRows();
+            this.cd.markForCheck();
+          })
+        )
+      );
     }
   }
 
@@ -321,9 +330,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
    * Called once, before the instance is destroyed.
    */
   ngOnDestroy(): void {
-    if (this.rowDetail || this.groupHeader) {
-      this.listener.unsubscribe();
-    }
+    this.listeners.forEach((s) => s.unsubscribe());
   }
 
   /**

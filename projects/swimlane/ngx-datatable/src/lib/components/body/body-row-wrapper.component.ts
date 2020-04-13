@@ -8,23 +8,28 @@ import {
   ChangeDetectionStrategy,
   KeyValueDiffer,
   ChangeDetectorRef,
-  KeyValueDiffers
+  KeyValueDiffers,
+  QueryList
 } from '@angular/core';
+import { DatatableGroupHeaderDirective } from './body-group-header.directive';
 
 @Component({
   selector: 'datatable-row-wrapper',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div *ngIf="groupHeader && groupHeader.template" class="datatable-group-header" [ngStyle]="getGroupHeaderStyle()">
-      <ng-template
-        *ngIf="groupHeader && groupHeader.template"
-        [ngTemplateOutlet]="groupHeader.template"
-        [ngTemplateOutletContext]="groupContext"
-      >
-      </ng-template>
-    </div>
-    <ng-content *ngIf="(groupHeader && groupHeader.template && expanded) || !groupHeader || !groupHeader.template">
-    </ng-content>
+    <ng-container *ngFor="let groupHeader of groupHeaders">
+      <div *ngIf="groupHeader && groupHeader.template" class="datatable-group-header" [ngStyle]="getGroupHeaderStyle()">
+        <ng-template
+          *ngIf="groupHeader && groupHeader.template"
+          [ngTemplateOutlet]="groupHeader.template"
+          [ngTemplateOutletContext]="groupContext"
+        >
+        </ng-template>
+      </div>
+      <ng-content
+        *ngIf="(groupHeader && groupHeader.template && expanded) || !groupHeader || !groupHeader.template"
+      ></ng-content>
+    </ng-container>
     <div
       *ngIf="rowDetail && rowDetail.template && expanded"
       [style.height.px]="detailRowHeight"
@@ -45,7 +50,7 @@ import {
 export class DataTableRowWrapperComponent implements DoCheck {
   @Input() innerWidth: number;
   @Input() rowDetail: any;
-  @Input() groupHeader: any;
+  @Input() groupHeaders: QueryList<DatatableGroupHeaderDirective>;
   @Input() offsetX: number;
   @Input() detailRowHeight: any;
   @Input() row: any;
