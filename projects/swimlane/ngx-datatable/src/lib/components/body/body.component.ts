@@ -784,11 +784,19 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
 
   getRowExpandedIdx(row: any, expanded: any[]): number {
     if (!expanded || !expanded.length) return -1;
-    const rowId = this.rowIdentity(row);
+    // const rowId = this.rowIdentity(row);
     return expanded.findIndex((r) => {
       const id = this.rowIdentity(r);
-      return id === rowId;
+      return this.isChildrenEqual(row, id);
     });
+  }
+
+  isChildrenEqual(row, expandedId) {
+    if (!row.children) {
+      return this.rowIdentity(row) == expandedId;
+    } else {
+      return this.rowIdentity(row) == expandedId || row.children.some((c) => this.isChildrenEqual(c, expandedId));
+    }
   }
 
   /**
