@@ -14,14 +14,13 @@
     #myTable
     class="material expandable"
     [rows]="rows"
-    [groupRowsBy]="'age'"
+    [groupedRows]="groupedRows"
     [columnMode]="ColumnMode.force"
     [scrollbarH]="true"
     [headerHeight]="50"
     [footerHeight]="50"
     [rowHeight]="40"
     [limit]="4"
-    [groupExpansionDefault]="true"
   >
     <!-- Group Header Template -->
     <ngx-datatable-group-header [rowHeight]="50" #myGroupHeader (toggle)="onDetailToggle($event)">

@@ -675,6 +675,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
    * status in case of sorting and filtering of the row set.
    */
   toggleRowExpansion(row: any): void {
+    console.log(row);
     // Capture the row index of the first row that is visible on the viewport.
     const viewPortFirstRowIndex = this.getAdjustedViewPortIndex();
     const rowExpandedIdx = this.getRowExpandedIdx(row, this.rowExpansions);
@@ -774,18 +775,15 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
    */
   getRowExpanded(row: any): boolean {
     if (this.rowExpansions.length === 0 && this.groupExpansionDefault) {
-      console.log(this.groupedRows);
       for (const group of this.groupedRows) {
         this.rowExpansions.push(group);
       }
     }
-
     return this.getRowExpandedIdx(row, this.rowExpansions) > -1;
   }
 
   getRowExpandedIdx(row: any, expanded: any[]): number {
     if (!expanded || !expanded.length) return -1;
-
     const rowId = this.rowIdentity(row);
     return expanded.findIndex((r) => {
       const id = this.rowIdentity(r);

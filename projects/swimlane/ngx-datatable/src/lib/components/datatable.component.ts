@@ -723,7 +723,7 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
       // where key is the groupRowsBy index
       return x.key;
     } else {
-      return x;
+      return x.key;
     }
   };
 
